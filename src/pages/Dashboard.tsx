@@ -1,15 +1,16 @@
-import BillingPage from './BillingPage'
-import ReportsPage from './ReportsPage'
-import CustomersPage from './CustomersPage'
-import NotificationsPage from './NotificationsPage'
-import SettingsPage from './SettingsPage'
-import AnalyticsPage from './AnalyticsPage'
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import type { Analytics } from '../types'
 import { useAuth } from '../hooks/useAuth'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
 import Sidebar from '../components/Sidebar'
+import AnalyticsPage from './AnalyticsPage'
+import SettingsPage from './SettingsPage'
+import NotificationsPage from './NotificationsPage'
+import CustomersPage from './CustomersPage'
+import ReportsPage from './ReportsPage'
+import BillingPage from './BillingPage'
+import { Menu } from 'lucide-react'
 
 type Page = 'dashboard' | 'analytics' | 'customers' | 'reports' | 'billing' | 'notifications' | 'settings' | 'security'
 
@@ -20,6 +21,7 @@ export default function Dashboard() {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ revenue: '', users: '', sales: '' })
   const [currentPage, setCurrentPage] = useState<Page>('dashboard')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => { fetchAnalytics() }, [])
 
@@ -52,8 +54,22 @@ export default function Dashboard() {
   const totalSales = analytics.reduce((s, a) => s + a.sales, 0)
 
   const renderPage = () => {
-    if (currentPage === 'dashboard') return (
-      <div className="p-6 max-w-6xl mx-auto">
+    if (currentPage === 'analytics') return <AnalyticsPage />
+    if (currentPage === 'settings') return <SettingsPage />
+    if (currentPage === 'notifications') return <NotificationsPage />
+    if (currentPage === 'customers') return <CustomersPage />
+    if (currentPage === 'reports') return <ReportsPage />
+    if (currentPage === 'billing') return <BillingPage />
+
+    if (currentPage === 'security') return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold text-gray-900">Security</h1>
+        <p className="text-gray-400 mt-2">Coming soon...</p>
+      </div>
+    )
+
+    return (
+      <div className="p-4 md:p-6 max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
@@ -64,7 +80,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           {[
             { label: 'Total Revenue', value: `$${totalRevenue.toLocaleString()}`, color: 'text-green-600', bg: 'bg-green-50' },
             { label: 'Total Users', value: totalUsers.toLocaleString(), color: 'text-blue-600', bg: 'bg-blue-50' },
@@ -77,7 +93,7 @@ export default function Dashboard() {
           ))}
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div className="bg-white rounded-xl border border-gray-100 p-5">
             <h3 className="text-sm font-semibold text-gray-700 mb-4">Revenue Growth</h3>
             <ResponsiveContainer width="100%" height={200}>
@@ -112,68 +128,59 @@ export default function Dashboard() {
           ) : analytics.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-8">No data yet. Click "Add Data" to get started.</p>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-gray-400 border-b border-gray-100">
-                  <th className="pb-3 font-medium">Date</th>
-                  <th className="pb-3 font-medium">Revenue</th>
-                  <th className="pb-3 font-medium">Users</th>
-                  <th className="pb-3 font-medium">Sales</th>
-                  <th className="pb-3 font-medium"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {analytics.map(row => (
-                  <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                    <td className="py-3 text-gray-500">{new Date(row.created_at).toLocaleDateString()}</td>
-                    <td className="py-3 text-green-600 font-medium">${row.revenue.toLocaleString()}</td>
-                    <td className="py-3 text-blue-600">{row.users.toLocaleString()}</td>
-                    <td className="py-3 text-purple-600">{row.sales.toLocaleString()}</td>
-                    <td className="py-3">
-                      <button onClick={() => deleteData(row.id)} className="text-red-400 hover:text-red-600 text-xs transition-colors">Delete</button>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-gray-400 border-b border-gray-100">
+                    <th className="pb-3 font-medium">Date</th>
+                    <th className="pb-3 font-medium">Revenue</th>
+                    <th className="pb-3 font-medium">Users</th>
+                    <th className="pb-3 font-medium">Sales</th>
+                    <th className="pb-3 font-medium"></th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {analytics.map(row => (
+                    <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                      <td className="py-3 text-gray-500">{new Date(row.created_at).toLocaleDateString()}</td>
+                      <td className="py-3 text-green-600 font-medium">${row.revenue.toLocaleString()}</td>
+                      <td className="py-3 text-blue-600">{row.users.toLocaleString()}</td>
+                      <td className="py-3 text-purple-600">{row.sales.toLocaleString()}</td>
+                      <td className="py-3">
+                        <button onClick={() => deleteData(row.id)} className="text-red-400 hover:text-red-600 text-xs transition-colors">Delete</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>
     )
-
-    // Placeholder pages
-    if (currentPage === 'analytics') return <AnalyticsPage />
-    if (currentPage === 'settings') return <SettingsPage />
-    if (currentPage === 'notifications') return <NotificationsPage />
-    if (currentPage === 'customers') return <CustomersPage />
-    if (currentPage === 'reports') return <ReportsPage />
-    if (currentPage === 'billing') return <BillingPage />
-
-const pageTitles: Record<string, string> = {
-  customers: 'Customers', reports: 'Reports',
-  billing: 'Billing', notifications: 'Notifications', settings: 'Settings', security: 'Security'
-}
-return (
-  <div className="p-6">
-    <h1 className="text-2xl font-bold text-gray-900">{pageTitles[currentPage]}</h1>
-    <p className="text-gray-400 mt-2">Coming soon...</p>
-  </div>
-)
   }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
+      <Sidebar
+        currentPage={currentPage}
+        onNavigate={setCurrentPage}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto min-w-0 pt-16">
         {/* TOP NAV */}
-        <nav className="bg-white border-b border-gray-100 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-          <button onClick={() => setCurrentPage('dashboard')} className="font-semibold text-gray-900 hover:text-green-500 transition-colors">
-            MetricFlow
-          </button>
+        <nav className="bg-gray-900 border-b border-gray-800 px-4 md:px-6 py-4 flex justify-between items-center fixed top-0 right-0 left-0 z-10">
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-500">{user?.email}</span>
+            <button onClick={() => setSidebarOpen(true)} className="md:hidden text-gray-500 hover:text-gray-900">
+              <Menu size={22} />
+            </button>
+            <button onClick={() => setCurrentPage('dashboard')} className="font-semibold text-white hover:text-green-400 transition-colors">
+  MetricFlow
+</button>
           </div>
+          <span className="text-sm text-gray-400 truncate max-w-[200px]">{user?.email}</span>
         </nav>
 
         {renderPage()}

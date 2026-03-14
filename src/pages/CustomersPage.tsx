@@ -55,49 +55,51 @@ export default function CustomersPage() {
 
       {/* TABLE */}
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-gray-400 border-b border-gray-100 bg-gray-50">
-              <th className="px-5 py-3 font-medium">Name</th>
-              <th className="px-5 py-3 font-medium">Plan</th>
-              <th className="px-5 py-3 font-medium">Status</th>
-              <th className="px-5 py-3 font-medium">Joined</th>
-              <th className="px-5 py-3 font-medium">Spent</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map(c => (
-              <tr key={c.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                <td className="px-5 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs">
-                      {c.name[0]}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{c.name}</p>
-                      <p className="text-xs text-gray-400">{c.email}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-5 py-3">
-                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                    c.plan === 'Enterprise' ? 'bg-purple-100 text-purple-700' :
-                    c.plan === 'Pro' ? 'bg-blue-100 text-blue-700' :
-                    'bg-gray-100 text-gray-600'
-                  }`}>{c.plan}</span>
-                </td>
-                <td className="px-5 py-3">
-                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                    c.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
-                  }`}>{c.status}</span>
-                </td>
-                <td className="px-5 py-3 text-gray-500">{c.joined}</td>
-                <td className="px-5 py-3 text-gray-900 font-medium">{c.spent}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  <div className="overflow-x-auto">
+    <table className="w-full text-sm min-w-[600px]">
+      <thead>
+        <tr className="text-left text-gray-400 border-b border-gray-100 bg-gray-50">
+          <th className="px-5 py-3 font-medium">Name</th>
+          <th className="px-5 py-3 font-medium">Plan</th>
+          <th className="px-5 py-3 font-medium">Status</th>
+          <th className="px-5 py-3 font-medium">Joined</th>
+          <th className="px-5 py-3 font-medium">Spent</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filtered.map(c => (
+          <tr key={c.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+            <td className="px-5 py-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs shrink-0">
+                  {c.name[0]}
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">{c.name}</p>
+                  <p className="text-xs text-gray-400">{c.email}</p>
+                </div>
+              </div>
+            </td>
+            <td className="px-5 py-3">
+              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                c.plan === 'Enterprise' ? 'bg-purple-100 text-purple-700' :
+                c.plan === 'Pro' ? 'bg-blue-100 text-blue-700' :
+                'bg-gray-100 text-gray-600'
+              }`}>{c.plan}</span>
+            </td>
+            <td className="px-5 py-3">
+              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                c.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
+              }`}>{c.status}</span>
+            </td>
+            <td className="px-5 py-3 text-gray-500">{c.joined}</td>
+            <td className="px-5 py-3 text-gray-900 font-medium">{c.spent}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
     </div>
   )
 }

@@ -39,7 +39,7 @@ export default function BillingPage() {
 
       {/* PLANS */}
       <h2 className="font-semibold text-gray-900 mb-4">Available Plans</h2>
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {plans.map(p => (
           <div key={p.name} className={`rounded-xl border p-5 transition-all duration-200 hover:shadow-md ${currentPlan === p.name ? 'border-green-400 bg-green-50' : 'border-gray-100 bg-white'}`}>
             <p className="font-semibold text-gray-900">{p.name}</p>
@@ -65,8 +65,8 @@ export default function BillingPage() {
 
       {/* INVOICES */}
       <h2 className="font-semibold text-gray-900 mb-4">Invoice History</h2>
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
+        <table className="w-full text-sm min-w-[400px]">
           <thead>
             <tr className="text-left text-gray-400 border-b border-gray-100 bg-gray-50">
               <th className="px-5 py-3 font-medium">Invoice</th>
